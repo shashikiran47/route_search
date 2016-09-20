@@ -181,7 +181,7 @@ def write_output():
 
 t0 = time()
 # do stuff that takes time
-
+#print "timepass comment"
 Pathinfo = collections.namedtuple('Pathinfo', 'destination path_cost')
 Node = collections.namedtuple('Node', 'parent path_cost')
 adjacency_list = {}
