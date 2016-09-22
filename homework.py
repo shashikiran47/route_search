@@ -5,7 +5,6 @@ from time import time
 
 
 def process_input(l):
-    #print l[0], l[1], l[2]
     path_info = Pathinfo(destination=l[1], path_cost=int(l[2]))
     if l[0] not in adjacency_list:
         adjacency_list[l[0]] = [path_info]
@@ -27,12 +26,9 @@ def bfs():
     node = Node(parent='no_parent', path_cost=0)
     Tree[start_state] = node
     while frontier.qsize() > 0:
-        #print "q :", frontier.queue
         parent = frontier.get()
         explored.add(parent)
-        #print "expl : ", explored
         if parent == goal_State:
-            print "yyyyeeaahhh"
             break
         children = adjacency_list.get(parent)
         if children is None:
@@ -43,7 +39,6 @@ def bfs():
                 node = Node(parent=parent, path_cost= Tree[parent].path_cost + 1)
                 Tree[child_name] = node
                 frontier.put(child.destination)
-    print "cost : ", Tree[goal_State].path_cost
 
 
 def dfs():
@@ -52,18 +47,12 @@ def dfs():
     frontier.put(start_state)
     node = Node(parent='no_parent', path_cost=0)
     Tree[start_state] = node
-    print "gggg", Tree[start_state].path_cost
     while frontier.qsize() > 0:
-        print "q df :", frontier.queue
         parent = frontier.get()
         explored.add(parent)
-        print "expl : ", explored
-        print "q :", frontier.queue
         if parent == goal_State:
-            print "yyyyeeaahhh"
             break
         children = adjacency_list.get(parent)
-        print "children for ", parent , "is ", children
         if children is None:
             continue
         for child in children:
@@ -72,8 +61,6 @@ def dfs():
                 node = Node(parent=parent, path_cost=Tree[parent].path_cost + 1)
                 Tree[child_name] = node
                 frontier.put(child_name)
-
-    print "cost : ", Tree[goal_State].path_cost
 
 
 def ucs():
@@ -84,12 +71,9 @@ def ucs():
     Tree[start_state] = node
     j=1
     while frontier.qsize() > 0:
-        #print "q :", frontier.queue
         _, _, parent = frontier.get()
         explored.add(parent)
-        #print "expl : ", explored
         if parent == goal_State:
-            print "yyyyeeaahhh"
             break
         children = adjacency_list.get(parent)
         if children is None:
@@ -101,23 +85,25 @@ def ucs():
             current_path_cost = Tree[parent].path_cost + child.path_cost
             node = Node(parent=parent, path_cost=current_path_cost)
             if child_name not in explored:
-                #print "ss : ", frontier.qsize()
                 for i in range(0,frontier.qsize()):
-                    #print "dd :", frontier.queue[i]
                     pathcost, secondpriority, nodename = frontier.queue[i]
                     if child_name == nodename:
-                        #print "cur cost :", current_path_cost, " old cost :", pathcost
                         already_present = True
                         if current_path_cost < pathcost:
-                            frontier.queue[i]=(current_path_cost, j, nodename)
+                            ll = []
+                            while (z != child_name):
+                                ll.append((x, y, z))
+                                x, y, z = frontier.get()
+                            for gg in ll:
+                                frontier.put(gg)
+                            frontier.put((current_path_cost, j, nodename))
+                            #frontier.queue[i]=(current_path_cost, j, nodename)
                             Tree[child_name]= node
                             break
 
                 if not already_present:
                     frontier.put((current_path_cost, j, child_name))
                     Tree[child_name] = node
-
-    print "cost : ", Tree[goal_State].path_cost
 
 
 def astar():
@@ -128,12 +114,9 @@ def astar():
     Tree[start_state] = node
     j=1
     while frontier.qsize() > 0:
-        print "q :", frontier.queue
         _, _, parent = frontier.get()
         explored.add(parent)
-        print "expl : ", explored
         if parent == goal_State:
-            print "yyyyeeaahhh"
             break
         children = adjacency_list.get(parent)
         if children is None:
@@ -146,23 +129,26 @@ def astar():
             path_cost_uptonow = Tree[parent].path_cost + child.path_cost
             node = Node(parent=parent, path_cost=path_cost_uptonow)
             if child_name not in explored:
-                print "ss : ", frontier.qsize()
                 for i in range(0,frontier.qsize()):
-                    print "dd :", frontier.queue[i]
                     pathcost, secondpriority, nodename = frontier.queue[i]
                     if child_name == nodename:
-                        print "cur cost :", current_path_cost, " old cost :", pathcost
                         already_present = True
                         if current_path_cost < pathcost:
-                            frontier.queue[i]=(current_path_cost, j, nodename)
+                            ll = []
+                            x,y,z = frontier.get()
+                            while (z != child_name):
+                                ll.append((x,y,z))
+                                x, y, z = frontier.get()
+                            for gg in ll:
+                                frontier.put(gg)
+                            frontier.put((current_path_cost,j, nodename))
+                            #frontier.queue[i]=(current_path_cost, j, nodename)
                             Tree[child_name]= node
                             break
 
                 if not already_present:
                     frontier.put((current_path_cost, j, child_name))
                     Tree[child_name] = node
-
-    print "cost : ", Tree[goal_State].path_cost
 
 
 def write_output():
@@ -179,9 +165,7 @@ def write_output():
     for current_node in reversed(path):
         output.write(current_node)
 
-t0 = time()
-# do stuff that takes time
-#print "timepass comment"
+ll = []
 Pathinfo = collections.namedtuple('Pathinfo', 'destination path_cost')
 Node = collections.namedtuple('Node', 'parent path_cost')
 adjacency_list = {}
@@ -204,10 +188,6 @@ while i < number_sunday_traffic_lines:
     process_sunday_input(line)
     i+=1
 
-# adjacency_list
-#print sunday_traffic_info
-
-
 if algorithm == 'BFS':
     bfs()
 elif algorithm == 'DFS':
@@ -217,10 +197,7 @@ elif algorithm == 'UCS':
 else:
     astar()
 
-#print "tree ", Tree
 write_output()
-
-print "time : ", time() - t0
 
 
 
