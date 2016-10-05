@@ -91,6 +91,7 @@ def ucs():
                         already_present = True
                         if current_path_cost < pathcost:
                             ll = []
+							x,y,z = frontier.get()
                             while (z != child_name):
                                 ll.append((x, y, z))
                                 x, y, z = frontier.get()
